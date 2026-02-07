@@ -1,17 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IERC20 {
-    function transferFrom(address from, address to, uint amount) external returns (bool);
-    function transfer(address to, uint amount) external returns (bool);
-    function balanceOf(address user) external view returns (uint);
-}
+import {IERC20} from "./interfaces/IERC20.sol";
 
 contract PredictionMarket {
     enum MarketState { OPEN, CLOSED, RESOLVED }
 
+    // ---------------- EVENTS ----------------
+
+    event SharesBought(address indexed user, bool indexed isYes, uint shares, uint cost);
+    event SharesSold(address indexed user, bool indexed isYes, uint shares, uint refund);
+    event MarketClosed();
+    event MarketResolved(uint8 outcome);
+    event Redeemed(address indexed user, uint payout);
+
+    // ---------------- STATE ----------------
+
     IERC20 public immutable collateralToken; // USDC
     address public immutable oracle;
+    address public immutable creator;
     uint public immutable tradingDeadline;
     uint public immutable resolveTime;
     uint public immutable b; // liquidity parameter (scaled)
@@ -30,12 +37,14 @@ contract PredictionMarket {
     constructor(
         address _collateral,
         address _oracle,
+        address _creator,
         uint _tradingDeadline,
         uint _resolveTime,
         uint _b
     ) {
         collateralToken = IERC20(_collateral);
         oracle = _oracle;
+        creator = _creator;
         tradingDeadline = _tradingDeadline;
         resolveTime = _resolveTime;
         b = _b;
@@ -84,6 +93,20 @@ contract PredictionMarket {
         return result;
     }
 
+    /// @notice Returns the current cost to buy `amountShares` of YES shares.
+    function quoteBuyYes(uint amountShares) external view returns (uint) {
+        uint costBefore = _cost(yesShares, noShares);
+        uint costAfter  = _cost(yesShares + amountShares, noShares);
+        return costAfter - costBefore;
+    }
+
+    /// @notice Returns the current cost to buy `amountShares` of NO shares.
+    function quoteBuyNo(uint amountShares) external view returns (uint) {
+        uint costBefore = _cost(yesShares, noShares);
+        uint costAfter  = _cost(yesShares, noShares + amountShares);
+        return costAfter - costBefore;
+    }
+
     // ---------------- TRADING ----------------
 
     function buyYes(uint amountShares) external onlyOpen {
@@ -95,6 +118,8 @@ contract PredictionMarket {
         userYes[msg.sender] += amountShares;
 
         require(collateralToken.transferFrom(msg.sender, address(this), payment), "Transfer failed");
+
+        emit SharesBought(msg.sender, true, amountShares, payment);
     }
 
     function buyNo(uint amountShares) external onlyOpen {
@@ -106,6 +131,8 @@ contract PredictionMarket {
         userNo[msg.sender] += amountShares;
 
         require(collateralToken.transferFrom(msg.sender, address(this), payment), "Transfer failed");
+
+        emit SharesBought(msg.sender, false, amountShares, payment);
     }
 
     function sellYes(uint amountShares) external onlyOpen {
@@ -119,6 +146,8 @@ contract PredictionMarket {
         userYes[msg.sender] -= amountShares;
 
         require(collateralToken.transfer(msg.sender, refund), "Refund failed");
+
+        emit SharesSold(msg.sender, true, amountShares, refund);
     }
 
     function sellNo(uint amountShares) external onlyOpen {
@@ -132,6 +161,8 @@ contract PredictionMarket {
         userNo[msg.sender] -= amountShares;
 
         require(collateralToken.transfer(msg.sender, refund), "Refund failed");
+
+        emit SharesSold(msg.sender, false, amountShares, refund);
     }
 
     // ---------------- LIFECYCLE ----------------
@@ -140,6 +171,8 @@ contract PredictionMarket {
         require(block.timestamp >= tradingDeadline, "Too early");
         require(marketState == MarketState.OPEN, "Already closed");
         marketState = MarketState.CLOSED;
+
+        emit MarketClosed();
     }
 
     function resolve(uint8 outcome) external onlyOracle {
@@ -149,6 +182,8 @@ contract PredictionMarket {
 
         resolvedOutcome = outcome;
         marketState = MarketState.RESOLVED;
+
+        emit MarketResolved(outcome);
     }
 
     // ---------------- REDEMPTION ----------------
@@ -167,5 +202,7 @@ contract PredictionMarket {
 
         require(payout > 0, "Nothing to redeem");
         require(collateralToken.transfer(msg.sender, payout), "Transfer failed");
+
+        emit Redeemed(msg.sender, payout);
     }
 }
