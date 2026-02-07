@@ -8,10 +8,12 @@ contract DeployFactory is Script {
     function run() external {
         // --- Configuration (override via env vars or CLI flags) ---
         address usdc = vm.envAddress("USDC_ADDRESS");
-        uint creationFee = vm.envOr("CREATION_FEE", uint(10e6));          // $10 USDC (6 decimals)
+        uint creationFee = vm.envOr("CREATION_FEE", uint(10e6)); // $10 USDC (6 decimals)
         uint initialLiquidity = vm.envOr("INITIAL_LIQUIDITY", uint(5e6)); // $5 seeded into market
 
-        vm.startBroadcast();
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+
+        vm.startBroadcast(deployerPrivateKey);
 
         PredictionMarketFactory factory = new PredictionMarketFactory(
             usdc,
