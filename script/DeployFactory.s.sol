@@ -9,7 +9,7 @@ contract DeployFactory is Script {
     function run() external {
         // --- Configuration (override via env vars or CLI flags) ---
         address usdc = vm.envAddress("USDC_ADDRESS");
-        uint256 creationFee = vm.envOr("CREATION_FEE", uint256(10e6));         // default $10 (USDC 6-dec)
+        uint256 creationFee = vm.envOr("CREATION_FEE", uint256(10e6)); // default $10 (USDC 6-dec)
         uint256 initialLiquidity = vm.envOr("INITIAL_LIQUIDITY", uint256(5e6)); // default $5  (USDC 6-dec)
 
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

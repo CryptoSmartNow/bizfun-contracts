@@ -76,12 +76,7 @@ contract PredictionMarketFactory {
     /// @param _implementation     Address of the deployed PredictionMarket logic contract (used as clone template).
     /// @param _creationFee        Total fee in collateral units (e.g. 10e6 for $10 when decimals=6, or 10e18 when decimals=18).
     /// @param _initialLiquidity   Portion of fee forwarded to seed the market (must be <= _creationFee).
-    constructor(
-        address _collateralToken,
-        address _implementation,
-        uint256 _creationFee,
-        uint256 _initialLiquidity
-    ) {
+    constructor(address _collateralToken, address _implementation, uint256 _creationFee, uint256 _initialLiquidity) {
         require(_collateralToken != address(0), "Invalid token");
         require(_implementation != address(0), "Invalid implementation");
 
