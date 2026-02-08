@@ -705,4 +705,23 @@ contract PredictionMarketTest is Test {
         assertTrue(pm.userYes(alice) > 0, "Creator should hold YES shares");
         assertTrue(pm.userNo(alice) > 0, "Creator should hold NO shares");
     }
+
+    function test_createMarket_seedsFullInitialLiquidity() public {
+        address market = _createMarket(alice);
+
+        // The market contract should hold approximately INITIAL_LIQUIDITY of USDC.
+        // Integer division when converting LMSR output (1e18) to USDC (1e6) can
+        // cause up to 1 wei of truncation per buy call, so we allow a tolerance of 2.
+        uint marketBalance = usdc.balanceOf(market);
+        assertApproxEqAbs(marketBalance, INITIAL_LIQUIDITY, 2, "Market should hold ~full initial liquidity");
+
+        // The factory should retain the rest of the creation fee
+        uint factoryBalance = usdc.balanceOf(address(factory));
+        assertApproxEqAbs(
+            factoryBalance,
+            CREATION_FEE - INITIAL_LIQUIDITY,
+            2,
+            "Factory should retain fee minus liquidity"
+        );
+    }
 }

@@ -136,7 +136,7 @@ factory.createMarket(
 - Factory pulls `creationFee` USDC from caller
 - Deploys an EIP-1167 clone of the PredictionMarket implementation
 - Calls `initialize(...)` on the clone (including `COLLATERAL_DECIMALS = 6` so the market can convert LMSR outputs to USDC amounts)
-- Seeds balanced liquidity: scales `initialLiquidity / 2` from USDC units (6 decimals) to share units (18 decimals) via `* 1e12`, then buys that many YES and NO shares
+- Seeds balanced liquidity: computes `sharesPerSide = initialLiquidity * collateralScale` (i.e. `5e6 * 1e12 = 5e18` shares), then buys that many YES shares and that many NO shares. Due to the LMSR property $C(q, q) - C(0, 0) = q$, the total USDC cost of balanced seeding equals `sharesPerSide / collateralScale = initialLiquidity` ($5).
 - Transfers those liquidity shares to the caller (market creator)
 - Stores market info and emits `MarketCreated` event
 - Returns the new market's address

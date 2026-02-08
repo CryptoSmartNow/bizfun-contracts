@@ -156,25 +156,30 @@ contract PredictionMarketFactory {
 
         // ----- Seed initial balanced liquidity -----
         if (initialLiquidity > 0) {
-            // Split evenly between YES and NO to start at ~50/50 probability.
-            // Scale USDC amount (6 decimals) to share units (18 decimals) so
-            // shares and the LMSR `b` parameter live in the same 1e18 space.
-            uint halfShares = (initialLiquidity / 2) * 1e12;
+            // We want to deposit exactly `initialLiquidity` USDC into the market.
+            //
+            // LMSR property: when buying q YES *and* q NO from an empty market,
+            // the total cost is:
+            //   C(q, q) - C(0, 0) = b*(q/b + ln2) - b*ln2 = q
+            // So the total cost in collateral = q / collateralScale.
+            //
+            // To spend exactly `initialLiquidity` USDC, we need:
+            //   q = initialLiquidity * collateralScale
+            //
+            // However, sequential buying (YES first, then NO) splits this cost
+            // unevenly between the two calls. We handle this by approving the
+            // full initialLiquidity and letting the LMSR math pull the correct
+            // amounts in each step. The total across both buys equals
+            // initialLiquidity because C(q,q) - C(0,0) = q.
+            uint collateralScaleFactor = 10 ** (18 - COLLATERAL_DECIMALS);
+            uint sharesPerSide = initialLiquidity * collateralScaleFactor;
 
-            // Approve the market to pull USDC from this factory for the
-            // LMSR cost of seeding (the cost output is scaled back to
-            // collateral decimals by the market contract).
+            // Approve the market to pull USDC from this factory
             COLLATERAL_TOKEN.approve(marketAddress, initialLiquidity);
 
-            // Buy YES shares
-            if (halfShares > 0) {
-                market.buyYes(halfShares);
-            }
-
-            // Buy NO shares with same amount
-            if (halfShares > 0) {
-                market.buyNo(halfShares);
-            }
+            // Buy YES shares then NO shares — total cost = sharesPerSide / collateralScale = initialLiquidity
+            market.buyYes(sharesPerSide);
+            market.buyNo(sharesPerSide);
 
             // Transfer liquidity shares to the market creator
             uint factoryYes = market.userYes(address(this));
