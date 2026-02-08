@@ -11,8 +11,8 @@
 | Contract                              | Address                                      | Notes                                             |
 | ------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
 | **MockUSDC**                          | `0x0d0ec10cc2eaeb6dbc9127fb98c9ebbfc029b8c9` | ERC-20, 6 decimals, has `faucet()`                |
-| **PredictionMarket (implementation)** | `0x687e9F0d08ca56e228B59ED5Bd5681e1FED90Ef4` | Do NOT interact directly — clone template only    |
-| **PredictionMarketFactory**           | `0x9a9e6674a9c522f4675C4DA1096f3eBe201383cF` | Entry point for creating and discovering markets  |
+| **PredictionMarket (implementation)** | `0xc4556812D9bEB0b402f03CaF57870628F51bD1DA` | Do NOT interact directly — clone template only    |
+| **PredictionMarketFactory**           | `0x59c474cA3bBFe4017813D9C432E3066F63dfAEad` | Entry point for creating and discovering markets  |
 
 > **Collateral token:** USDC (6 decimals). On testnet the MockUSDC above is used. Call `faucet()` on MockUSDC to mint 1,000 USDC to your address for free.
 
@@ -21,24 +21,24 @@
 | Contract                              | Address | Notes              |
 | ------------------------------------- | ------- | ------------------ |
 | **USDC**                              | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`   | Native USDC on Base |
-| **PredictionMarket (implementation)** | _TBD_   | Clone template     |
-| **PredictionMarketFactory**           | _TBD_   | Entry point        |
+| **PredictionMarket (implementation)** | `0x734de9628bF15f14C888b43E588bB63440887247`   | Clone template     |
+| **PredictionMarketFactory**           | `0xADBeAF3b2C610fa71003660605087341779f2EE9`   | Entry point        |
 
 ### BNB Smart Chain (BSC) — Chain ID `56`
 
 | Contract                              | Address | Notes          |
 | ------------------------------------- | ------- | -------------- |
-| **USDC**                              | _TBD_   | USDC on BSC    |
-| **PredictionMarket (implementation)** | _TBD_   | Clone template |
-| **PredictionMarketFactory**           | _TBD_   | Entry point    |
+| **USDC**                              | `0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d`   | USDC on BSC    |
+| **PredictionMarket (implementation)** | `0x734de9628bF15f14C888b43E588bB63440887247`   | Clone template |
+| **PredictionMarketFactory**           | `0xADBeAF3b2C610fa71003660605087341779f2EE9`   | Entry point    |
 
-### Monad Mainnet
+### Monad Mainnet - Chain ID `143`
 
 | Contract                              | Address | Notes          |
 | ------------------------------------- | ------- | -------------- |
 | **USDC**                              | `0x754704Bc059F8C67012fEd69BC8A327a5aafb603`   | USDC on Monad    |
-| **PredictionMarket (implementation)** | _TBD_   | Clone template |
-| **PredictionMarketFactory**           | _TBD_   | Entry point    |
+| **PredictionMarket (implementation)** | `0x734de9628bF15f14C888b43E588bB63440887247`   | Clone template |
+| **PredictionMarketFactory**           | `0xADBeAF3b2C610fa71003660605087341779f2EE9`   | Entry point    |
 
 ---
 
