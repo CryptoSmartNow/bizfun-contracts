@@ -11,8 +11,8 @@
 | Contract                              | Address                                      | Notes                                             |
 | ------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
 | **MockUSDC**                          | `0x0d0ec10cc2eaeb6dbc9127fb98c9ebbfc029b8c9` | ERC-20, 6 decimals, has `faucet()`                |
-| **PredictionMarket (implementation)** | `0x19081022d8e7CC03d103295c7088655af6A9011E` | Do NOT interact directly — clone template only    |
-| **PredictionMarketFactory**           | `0xb65f0ef1256a1d9c2b04a59f83dbd35b6c6675e3` | Entry point for creating and discovering markets  |
+| **PredictionMarket (implementation)** | `0x687e9F0d08ca56e228B59ED5Bd5681e1FED90Ef4` | Do NOT interact directly — clone template only    |
+| **PredictionMarketFactory**           | `0x9a9e6674a9c522f4675C4DA1096f3eBe201383cF` | Entry point for creating and discovering markets  |
 
 > **Collateral token:** USDC (6 decimals). On testnet the MockUSDC above is used. Call `faucet()` on MockUSDC to mint 1,000 USDC to your address for free.
 
@@ -20,7 +20,7 @@
 
 | Contract                              | Address | Notes              |
 | ------------------------------------- | ------- | ------------------ |
-| **USDC**                              | _TBD_   | Native USDC on Base |
+| **USDC**                              | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`   | Native USDC on Base |
 | **PredictionMarket (implementation)** | _TBD_   | Clone template     |
 | **PredictionMarketFactory**           | _TBD_   | Entry point        |
 
@@ -29,6 +29,14 @@
 | Contract                              | Address | Notes          |
 | ------------------------------------- | ------- | -------------- |
 | **USDC**                              | _TBD_   | USDC on BSC    |
+| **PredictionMarket (implementation)** | _TBD_   | Clone template |
+| **PredictionMarketFactory**           | _TBD_   | Entry point    |
+
+### Monad Mainnet
+
+| Contract                              | Address | Notes          |
+| ------------------------------------- | ------- | -------------- |
+| **USDC**                              | `0x754704Bc059F8C67012fEd69BC8A327a5aafb603`   | USDC on Monad    |
 | **PredictionMarket (implementation)** | _TBD_   | Clone template |
 | **PredictionMarketFactory**           | _TBD_   | Entry point    |
 
